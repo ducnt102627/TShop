@@ -1,12 +1,12 @@
-
+import Router from "./routes";
 
 function App() {
+    return (
+        <>
+            <Router />
 
-  return (
-   <>
-    <h1>hello</h1>
-   </>
-  )
+        </>
+    );
 }
 
-export default App
+export default App;

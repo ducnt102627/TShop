@@ -12,8 +12,10 @@ export const addCategory = async (req, res) => {
                 message: error.details[0].message,
             })
         }
+
         const newCategory = await CategoryModel.create({
             name: req.body.name,
+
             slug: slugify(req.body.name, "-")
         });
         return res.status(STATUS.OK).json({
@@ -52,21 +54,21 @@ export const getAll = async (req, res) => {
             sort: { [sort]: _order === "desc" ? 1 : -1 }
         }
         const data = await CategoryModel.paginate({}, option)
-        console.log(data)
+        // console.log(data)
         if (!data.docs) {
             return res.status(STATUS.BAD_REQUEST).json({ message: "Không có danh mục nào" })
         }
-        const response = {
-            categories: data.docs,
-            pagination: {
-                currentPage: data.page,
-                totalPages: data.totalPages,
-                totalItems: data.totalDocs
-            }
-        }
+        // const response = {
+        //     categories: data.docs,
+        //     pagination: {
+        //         currentPage: data.page,
+        //         totalPages: data.totalPages,
+        //         totalItems: data.totalDocs
+        //     }
+        // }
         // console.log("response: ", response)
         return res.status(STATUS.OK).json({
-            message: "Lấy danh mục thành công", response
+            message: "Lấy danh mục thành công", data
         })
     } catch (error) {
         return res.status(STATUS.INTERNAL).json({

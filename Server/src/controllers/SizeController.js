@@ -10,7 +10,9 @@ export const addSize = async (req, res) => {
                 message: error.details[0].message,
             })
         }
-        const size = await SizeModel.create(req.body);
+        const size = await SizeModel.create({
+            name, minHeight, maxHeight, minWeight, maxWeight
+        });
         return res.status(STATUS.OK).json({
             message: "Thêm kích cỡ thành công", size
         })

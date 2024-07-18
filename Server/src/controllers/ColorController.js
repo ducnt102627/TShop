@@ -11,7 +11,7 @@ export const addColor = async (req, res) => {
                 message: error.details[0].message,
             })
         }
-        const color = await ColorModel.create(req.body);
+        const color = await ColorModel.create({ name, color });
         return res.status(STATUS.OK).json({
             message: "Thêm thành công", color
         })

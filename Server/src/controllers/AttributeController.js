@@ -3,7 +3,13 @@ import STATUS from "../utils/status";
 
 export const addAttribute = async (req, res) => {
     try {
-        const data = await AttributeModel.create(req.body);
+        const { color, size, price, quantity } = req.body;
+        const data = await AttributeModel.create({
+            color,
+            size,
+            price,
+            quantity,
+        });
         if (!data) {
             return res.status(STATUS.BAD_REQUEST).json(
                 { message: "Thêm thất bại", }

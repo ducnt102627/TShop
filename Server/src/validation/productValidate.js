@@ -28,5 +28,6 @@ export const productValidate = Joi.object({
 })
 export const categoryValidate = Joi.object({
     name: Joi.string().required().messages({}),
-    slug: Joi.string().required().messages({})
+    slug: Joi.string().messages({}),
+
 })
