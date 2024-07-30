@@ -11,18 +11,22 @@ export const loginFormValidation = Joi.object({
     }),
 });
 
-export const registerForm = Joi.object({
+export const registerFormValidation = Joi.object({
     username: Joi.string().required().messages({
         "any.required": "Bạn chưa nhập tên đăng nhập",
-    }),
-    password: Joi.string().required().min(6).messages({
-        "any.required": "Bạn chưa nhập mật khẩu",
     }),
     email: Joi.string().email().required().messages({
         "any.required": "Bạn chưa nhập email",
         "string.email": "Email không đúng định dạng",
     }),
-    forgotPassword: Joi.string().required().messages({
-        "any.required": "Bạn chưa nhập nhập lại mật khẩu",
+    password: Joi.string().required().min(6).max(30).messages({
+        "any.required": "Mật khẩu là bắt buộc!",
+        "any.empty": " Mật khẩu không dược để trống",
+        "string.min": "Mật khẩu phải có ít nhất {#limit} ký tự",
+        "string.max": "Mật khẩu phải có nhiều nhất {#limit} ký tự"
+    }),
+    confirmPassword: Joi.string().required().valid(Joi.ref("password")).messages({
+        "any.required": "Confirm Password là bắt buộc",
+        "any.only": "Mật khẩu không trùng khớp"
     }),
 });

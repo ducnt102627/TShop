@@ -1,0 +1,271 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: "Lexend", sans-serif;
+}
+
+.container {
+    @apply max-w-7xl mx-auto px-4 lg:px-10;
+}
+
+.container-large {
+    @apply max-w-[1440px] mx-auto px-4 lg:px-16;
+}
+
+/* .container-large {
+    @apply w-full px-4 xl:pl-[140px];
+} */
+
+/* .text-hover{
+    @apply
+} */
+.menu-item {
+    @apply text-[#46494F] text-base font-medium mx-[25px]
+}
+
+.menu-item:hover {
+    @apply border-b border-primary text-primary transition ease-in-out duration-300
+}
+
+.btn {
+    @apply bg-primary rounded-full text-white inline-block lg:text-lg font-medium px-[40px] py-[16px] lg:px-[56px] lg:py-[18.5px] transition ease-in-out duration-300;
+}
+
+.btn-default {
+    @apply bg-primary rounded-full text-white inline-block lg:text-lg font-medium
+}
+
+.btn-default:hover {
+    @apply bg-green-700 shadow-lg
+}
+
+.btn:hover {
+    @apply bg-green-700 shadow-md;
+}
+
+.btn-lg {
+    @apply h-[64px] leading-[64px] px-28 text-lg;
+}
+
+.main-title {
+    @apply text-[32px]/[120%] lg:mb-5 lg:text-[64px]/[110%] -tracking-[1.5px] lg:-tracking-[2px];
+}
+
+@media (min-width: 768px) {
+    .lg\:btn-lg {
+        @apply h-[64px] leading-[64px] px-28 text-lg;
+    }
+}
+
+@media (min-width: 1024px) {
+    .lg\:btn-lg {
+        @apply h-[64px] leading-[64px] px-28 text-lg;
+    }
+}
+
+/* btn best dis */
+.tab-title {
+    @apply block border border-[#F4F4F4] rounded-full text-sm lg:text-base leading-[150%] font-medium px-[20px] py-[10px] lg:py-[12px] text-center
+}
+
+.tab-title-active {
+    @apply block border border-[#05422C] rounded-full bg-[#F2F6F4] text-sm lg:text-base leading-[150%] font-medium px-[20px] py-[10px] lg:py-[12px] text-center
+}
+
+.tab-title:hover {
+    @apply border border-[#05422C] rounded-full bg-[#F2F6F4] transition ease-in-out duration-300
+}
+
+.swiper {
+    @apply relative
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    @apply w-[50px] h-[50px] border border-white bg-white rounded-full absolute lg:top-[200px] lg:right-[148px] text-[12px] text-[#54576D]
+}
+
+.swiper-button-next::after,
+.swiper-button-prev::after {
+    @apply text-[20px]
+}
+
+
+.filter-item {
+    @apply px-[20px] py-3 border border-[#F4F4F4] rounded-[100px] hover:bg-[#F2F6F4] hover:border-[#05422C] transition-all duration-300
+}
+
+.filter-item-active {
+    @apply px-[20px] py-3 border rounded-[100px] bg-[#F2F6F4] border-[#05422C]
+}
+
+/* shop.html */
+@media (max-width: 768px) {
+    .banner-shop {
+        display: flex;
+        padding: 24px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 40px;
+        align-self: stretch;
+        background: #05422C;
+        backdrop-filter: blur(200px);
+    }
+}
+
+@media (min-width:1024px) {
+    .banner-shop {
+        display: flex;
+        padding: 56px 76px 56px 56px;
+        justify-content: space-between;
+        align-items: center;
+        align-self: stretch;
+        border-radius: 24px;
+        /* background: seagreen; */
+        background-color: #174F3B;
+        backdrop-filter: blur(20px);
+        /* backdrop-filter: opacity(0.4); */
+    }
+}
+
+.card-banner {
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.swiper-container {
+    position: relative;
+    width: 100%;
+    overflow-x: hidden;
+
+}
+
+.swiperShop {
+    margin: 0 auto;
+    cursor: grab;
+
+}
+
+.swiper-slide {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.shop-pagination {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 16px;
+}
+
+.swiper-pagination-bullet {
+    background: #fff;
+    width: 6px;
+    height: 6px;
+
+}
+
+.navigation {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    /* position: absolute;
+    top: 161px;
+    z-index: 50px; */
+}
+
+.sw-button-next,
+.sw-button-prev {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+/* .sw-button-next::after,
+.sw-button-prev::after {
+    font-size: 16px;
+    font-weight: bold;
+    color: #000;
+} */
+
+/*  */
+.category-item {
+    display: block;
+    align-items: center;
+    position: relative;
+    padding-left: 35px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 16px;
+    line-height: 21px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.category-item input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom radio button */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 20px;
+    width: 20px;
+    border: 1px solid #F4F4F4;
+    background-color: #ffff;
+    border-radius: 100%;
+}
+
+/* On mouse-over, add a grey background color */
+.category-item:hover input~.checkmark {}
+
+/* When the radio button is checked, add a blue background */
+.category-item input:checked~.checkmark {
+    background-color: #17AF26;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.category-item input:checked~.checkmark:after {
+    display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.category-item .checkmark:after {
+    top: 5px;
+    left: 5px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: white;
+}
+
+input[type=range]::-webkit-slider-thumb {
+    pointer-events: all;
+    width: 24px;
+    height: 24px;
+    -webkit-appearance: none;
+    /* @apply w-6 h-6 appearance-none pointer-events-auto; */
+}

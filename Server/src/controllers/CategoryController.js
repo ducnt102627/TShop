@@ -2,7 +2,7 @@ import { categoryValidate } from "../validation/productValidate";
 import STATUS from "../utils/status";
 import CategoryModel from "../models/products/CategoryModel";
 import slugify from "slugify";
-import { paginate } from "mongoose-paginate-v2";
+
 
 export const addCategory = async (req, res) => {
     try {
@@ -15,7 +15,6 @@ export const addCategory = async (req, res) => {
 
         const newCategory = await CategoryModel.create({
             name: req.body.name,
-
             slug: slugify(req.body.name, "-")
         });
         return res.status(STATUS.OK).json({
@@ -47,10 +46,11 @@ export const updateCategory = async (req, res) => {
 }
 export const getAll = async (req, res) => {
     try {
-        const { _page = 1, _limit = 10, sort = "createAt", _order = "asc" } = req.query;
+        const { limitCustom, pageIndex } = req.body;
+        const { _page = 1, _limit = 5, sort = "createAt", _order = "asc" } = req.query;
         const option = {
-            page: _page,
-            limit: _limit,
+            page: _page || pageIndex,
+            limit: _limit || limitCustom,
             sort: { [sort]: _order === "desc" ? 1 : -1 }
         }
         const data = await CategoryModel.paginate({}, option)
@@ -58,18 +58,15 @@ export const getAll = async (req, res) => {
         if (!data.docs) {
             return res.status(STATUS.BAD_REQUEST).json({ message: "Không có danh mục nào" })
         }
-        // const response = {
-        //     categories: data.docs,
-        //     pagination: {
-        //         currentPage: data.page,
-        //         totalPages: data.totalPages,
-        //         totalItems: data.totalDocs
-        //     }
-        // }
+        const result = {
+            content: data.docs,
+            currentPage: data.page,
+            totalPages: data.totalPages,
+            totalItems: data.totalDocs
+
+        }
         // console.log("response: ", response)
-        return res.status(STATUS.OK).json({
-            message: "Lấy danh mục thành công", data
-        })
+        return res.status(STATUS.OK).json(result)
     } catch (error) {
         return res.status(STATUS.INTERNAL).json({
             message: error.message

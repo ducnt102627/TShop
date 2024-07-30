@@ -2,10 +2,7 @@ import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
     {
-        firstName: {
-            type: String,
-        },
-        lastName: {
+        username: {
             type: String,
         },
         full_name: {
@@ -20,10 +17,6 @@ const userSchema = new mongoose.Schema(
             type: String,
             min: 6,
             // required: true,
-        },
-        provider: {
-            type: String,
-            default: "credential",
         },
         uid: {
             type: String,
@@ -42,7 +35,7 @@ const userSchema = new mongoose.Schema(
         gender: {
             type: String,
         },
-        role: {
+        is_admin: {
             type: Boolean,
             default: false,
         }

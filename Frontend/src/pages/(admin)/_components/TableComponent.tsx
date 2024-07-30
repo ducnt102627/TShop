@@ -43,7 +43,7 @@ interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     pageCount: number,
-    handlePageClick: ({ selected }: { selected: number }) => void,
+    handlePageClick?: ({ selected }: { selected: number }) => void,
 }
 
 export function TableComponent<TData, TValue>({ columns, data, pageCount, handlePageClick }: DataTableProps<TData, TValue>) {

@@ -1,4 +1,5 @@
 import React from "react";
+import MainMenu from "./MainMenu";
 
 type Props = {};
 
@@ -76,19 +77,7 @@ const Header = (props: Props) => {
             {/* nav web */}
             <div className="hidden lg:block">
                 <div className="container mx-auto">
-                    <nav >
-                        <ul className=" flex justify-center items-center  py-3">
-                            <li><a href="shop.html" className="menu-item">Shop All</a></li>
-                            <li><a href="#" className="menu-item">Flower</a></li>
-                            <li><a href="#" className="menu-item">Edibles</a></li>
-                            <li><a href="#" className="menu-item">Concentrates</a></li>
-                            <li><a href="#" className="menu-item">Mushrooms</a></li>
-                            <li><a href="#" className="menu-item">Promotions/Bundles</a></li>
-                            <li><a href="#" className="menu-item">Support</a></li>
-                            <li><a href="#" className="menu-item">Rewards</a></li>
-                            <li><a href="#" className="menu-item">Blog</a></li>
-                        </ul>
-                    </nav>
+                    <MainMenu />
                 </div>
             </div>
         </header>

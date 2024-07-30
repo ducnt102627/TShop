@@ -5,9 +5,9 @@ const categoryRouter = Router();
 
 categoryRouter.post('/add', addCategory);
 categoryRouter.put('/update/:id', updateCategory);
-categoryRouter.get('/get', getAll);
+categoryRouter.get('/getAll', getAll);
 categoryRouter.get('/getDeleted', getAllDeleted);
 categoryRouter.get('/get/:id', getById);
 categoryRouter.delete('/delSort/:id', deleteSortCategory);
-categoryRouter.patch('/restore/:id', restoreCategoryById)
+categoryRouter.put('/restore/:id', restoreCategoryById)
 export default categoryRouter;

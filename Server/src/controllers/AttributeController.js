@@ -16,7 +16,7 @@ export const addAttribute = async (req, res) => {
             )
         }
         return res.status(STATUS.OK).json({
-            message: "Thêm thành công"
+            message: "Thêm thành công", data
         })
     } catch (error) {
         return res.status(STATUS.INTERNAL).json({

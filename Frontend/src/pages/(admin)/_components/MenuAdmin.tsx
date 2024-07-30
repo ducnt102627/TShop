@@ -1,7 +1,7 @@
 
 const MenuAdmin: any[] = [
     {
-        path: "/category",
+        path: "/admin/category",
         icon: "",
         label: "Danh mục"
     },

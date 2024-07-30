@@ -16,11 +16,15 @@ const SidebarAdmin = () => {
                     </div>
                 </div>
                 <div className='flex flex-col'>
-                    {MenuAdmin.map((item, index) => (
+                    {/* {MenuAdmin.map((item, index) => (
                         <NavLink to="" className="text-base font-medium text-[#09090B] py-3">
                             {item.label}
                         </NavLink>
-                    ))}
+                    ))} */}
+                    <NavLink to="/admin/category">Danh mục</NavLink>
+                    <NavLink to="/admin/category">Sản phẩm</NavLink>
+                    <NavLink to="/admin/category">Màu sắc</NavLink>
+                    <NavLink to="/admin/category">Kích cỡ</NavLink>
 
                 </div>
             </ScrollArea>

@@ -4,7 +4,7 @@ import { cn } from "@/common/lib/utils";
 
 interface Props {
     pageCount: number;
-    handlePageClick: ({ selected }: { selected: number }) => void;
+    handlePageClick?: ({ selected }: { selected: number }) => void;
     size?: "sm" | "md";
 }
 

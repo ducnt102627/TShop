@@ -11,7 +11,7 @@ export const addColor = async (req, res) => {
                 message: error.details[0].message,
             })
         }
-        const color = await ColorModel.create({ name, color });
+        const color = await ColorModel.create({ name, code });
         return res.status(STATUS.OK).json({
             message: "Thêm thành công", color
         })
@@ -58,7 +58,6 @@ export const getAllColor = async (req, res) => {
                 message: "Không có màu nào"
             })
         }
-        console.log(data)
         const response = {
             colors: data.docs,
             pagination: {
