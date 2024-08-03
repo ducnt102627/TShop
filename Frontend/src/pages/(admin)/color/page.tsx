@@ -1,8 +1,9 @@
 import React from 'react'
+import Colors from './_component/Colors'
 
 const ColorAdmin = () => {
     return (
-        <div>ColorAdmin</div>
+        <><Colors /></>
     )
 }
 

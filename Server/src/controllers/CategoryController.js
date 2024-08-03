@@ -44,7 +44,7 @@ export const updateCategory = async (req, res) => {
         })
     }
 }
-export const getAll = async (req, res) => {
+export const getListPag = async (req, res) => {
     try {
         const { sort = "createAt", _order = "asc" } = req.query;
         const { page = 1, pageSize, tab = 1 } = req.body;

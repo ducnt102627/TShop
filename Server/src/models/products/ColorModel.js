@@ -12,5 +12,4 @@ const colorSchema = new mongoose.Schema({
 }, { timestamps: true }
 )
 colorSchema.plugin(mongoosePaginate);
-colorSchema.plugin(mongooseDelete, { deletedAt: true, overrideMethods: "all" });
 export default mongoose.model("Color", colorSchema)

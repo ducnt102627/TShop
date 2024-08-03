@@ -19,5 +19,4 @@ const CategorySchema = new mongoose.Schema(
     { timestamps: true, versionKey: false }
 )
 CategorySchema.plugin(mongoosePaginate);
-// CategorySchema.plugin(mongooseDelete, { deletedAt: true, overrideMethods: 'all' })
 export default mongoose.model("Category", CategorySchema)

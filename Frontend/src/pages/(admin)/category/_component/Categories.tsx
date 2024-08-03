@@ -18,7 +18,7 @@ import { getPaginate, hiddenCategory, restoreCategory } from '@/services/categor
 import {
     DotsHorizontalIcon
 } from "@radix-ui/react-icons";
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery, useQueryClient, QueryCache } from '@tanstack/react-query';
 import {
     ColumnDef
 } from "@tanstack/react-table";
@@ -50,8 +50,7 @@ export interface OptionsType {
     totalPages?: number;
     totalItems?: number;
 }
-const Categorise = () => {
-    const [categoriseHidden, setCategoriesHidden] = useState<ICategory[]>([]);
+const Categories = () => {
     const [response, setResponse] = useState<typeResponse>({
         currentPage: 0,
         totalPages: 0,
@@ -60,13 +59,13 @@ const Categorise = () => {
     const [openId, setOpenId] = useState<string | boolean>(false);
     const [openHidden, setOpenHidden] = useState<string | boolean>(false);
     const [options, setOptions] = useState<OptionsType>({
-        page: 2,
+        page: 1,
         pageSize: 5,
         sort: 1,
         tab: 1,
     })
     const queryClient = useQueryClient();
-    const { data: categories, isLoading } = useQuery({
+    const { data: categories, isFetching } = useQuery({
         queryKey: ['categories', options],
         queryFn: async () => {
             const { data } = await getPaginate(options);
@@ -76,7 +75,10 @@ const Categorise = () => {
                 totalItems: data.totalItems,
             })
             return data;
-        }
+        },
+        placeholderData: keepPreviousData,
+        staleTime: 5 * 60 * 1000, // 5 phút
+        // cacheTime: 10 * 60 * 1000, // 10 phút
     })
     const { mutate: handleHidden } = useMutation({
         mutationFn: async (id: string | boolean) => {
@@ -112,7 +114,6 @@ const Categorise = () => {
     });
 
     const handlePageClick = (value: any) => {
-        console.log(value);
         setOptions({ ...options, page: +value.selected + 1 });
     }
 
@@ -176,7 +177,7 @@ const Categorise = () => {
                             </DropdownMenuItem>
                             {row?.original?.deleted ? (
                                 <DropdownMenuItem onClick={() => handleRestore(row.original._id)}>
-                                    Bỏ ẩn
+                                    Khôi phục
                                 </DropdownMenuItem>
 
                             ) : (
@@ -193,40 +194,44 @@ const Categorise = () => {
 
     return (
         <div className="w-full">
+            {isFetching ? <div>Loading...</div> : null}
             <div className="flex justify-between items-center py-4">
                 <h3 className="text-xl font-medium">Quản lý danh mục</h3>
-                <Button onClick={() => setOpenId(true)} className='flex gap-1'><IoMdAdd size={24} /> Danh mục</Button>
+                <Button onClick={() => setOpenId(true)} className='flex gap-1'><IoMdAdd size={20} /> Danh mục</Button>
             </div>
-            <Tabs defaultValue="1" className="w-[100%]">
+            <Tabs value={`${options.tab}`} className="w-[100%]">
                 <TabsList className="grid w-full grid-cols-2">
                     <TabsTrigger value="1" onClick={() => { setOptions((prev: any) => ({ ...prev, tab: 1 })) }}>Danh mục</TabsTrigger>
                     <TabsTrigger value="2" onClick={() => { setOptions((prev: any) => ({ ...prev, tab: 2 })) }}>Danh mục đã ẩn</TabsTrigger>
                 </TabsList>
-                <TableComponent columns={columns} data={categories?.content || ''} pageCount={response?.totalPages} handlePageClick={handlePageClick} />
             </Tabs>
+            <TableComponent columns={columns} data={categories?.content || ""} pageCount={response?.totalPages} handlePageClick={handlePageClick} />
 
-            {!!openId && (
-                <CategoryForm
-                    open={openId}
-                    title="Cập nhật"
-                    handleClose={() => setOpenId(false)}
-                // handlePaging={() => handleCategory(1)}
-                />
-            )}
+            {
+                !!openId && (
+                    <CategoryForm
+                        open={openId}
+                        title="Cập nhật"
+                        handleClose={() => setOpenId(false)}
+                    // handlePaging={() => handleCategory(1)}
+                    />
+                )
+            }
+            {
+                !!openHidden && (
+                    <DialogConfirm
+                        open={!!openHidden}
+                        title="Xác nhận xóa"
+                        content="Bạn có chắc muốn ẩn danh mục này?"
+                        handleClose={() => setOpenHidden(false)}
+                        handleSubmit={() => handleHidden(openHidden)}
+                        labelConfirm="Ẩn"
 
-            {!!openHidden && (
-                <DialogConfirm
-                    open={!!openHidden}
-                    title="Xác nhận xóa"
-                    content="Bạn có chắc muốn ẩn danh mục này?"
-                    handleClose={() => setOpenHidden(false)}
-                    handleSubmit={() => handleHidden(openHidden)}
-                    labelConfirm="Ẩn"
-
-                />
-            )}
+                    />
+                )
+            }
         </div >
     )
 }
 
-export default Categorise
+export default Categories

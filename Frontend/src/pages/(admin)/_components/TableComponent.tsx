@@ -1,31 +1,16 @@
-import React from 'react'
-import { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
-import {
-    DotsHorizontalIcon
-} from "@radix-ui/react-icons"
 import {
     ColumnDef,
     ColumnFiltersState,
-    SortingState,
-    VisibilityState,
+    RowSelectionState,
     flexRender,
     getCoreRowModel,
     getFilteredRowModel,
-    getPaginationRowModel,
-    getSortedRowModel,
-    useReactTable,
+    useReactTable
 } from "@tanstack/react-table"
 
 import Paginations from '@/components/Pagination'
-import { Button } from "@/components/ui/button"
-import { Checkbox } from "@/components/ui/checkbox"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import {
     Table,
@@ -35,24 +20,27 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table"
-import instance from '@/configs/axios'
-import { IoMdAdd } from "react-icons/io"
-import { Value } from '@radix-ui/react-select'
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[];
     data: TData[];
     pageCount: number,
     handlePageClick?: ({ selected }: { selected: number }) => void,
+    rowSelection?: RowSelectionState | undefined; //! lưu trữ các row selected
+    setRowSelection?: React.Dispatch<React.SetStateAction<RowSelectionState>>; //! hàm đ
 }
 
-export function TableComponent<TData, TValue>({ columns, data, pageCount, handlePageClick }: DataTableProps<TData, TValue>) {
+export function TableComponent<TData, TValue>(
+    { columns, data, pageCount, handlePageClick, rowSelection,
+        setRowSelection, }: DataTableProps<TData, TValue>) {
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
         []
     )
     const table = useReactTable({
         data,
         columns,
+        rowSelection,
+        setRowSelection,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
     })

@@ -63,7 +63,7 @@ export const getAllColor = async (req, res) => {
 export const getListPaginate = async (req, res) => {
     try {
         const { sort = "createAt", _order = "asc" } = req.query;
-        const { page = 1, pageSize } = req.body;
+        const { page = 1, pageSize, tab = 1 } = req.body;
         let limit = pageSize || 10;
 
         const option = {

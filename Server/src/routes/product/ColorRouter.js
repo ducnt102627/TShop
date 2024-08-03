@@ -13,7 +13,7 @@ const colorRouter = Router();
 
 colorRouter.post('/add', addColor);
 colorRouter.post('/paginate', getListPaginate);
-colorRouter.post('/get', getAllColor);
+colorRouter.post('/getAll', getAllColor);
 colorRouter.get('/get/:id', getColorById);
 colorRouter.put('/edit/:id', updateColor);
 colorRouter.delete('/del/:id', deleteColorForever)

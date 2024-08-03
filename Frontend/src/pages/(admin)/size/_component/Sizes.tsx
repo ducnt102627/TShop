@@ -1,9 +1,4 @@
-import { IColor } from '@/interfaces/color';
-import { OptionsType, typeResponse } from '@/interfaces/options';
-import { getPaginate, hiddenColor, restoreColor } from '@/services/color';
-import { useEffect, useState } from 'react';
-import { TableComponent } from '../../_components/TableComponent';
-
+import React, { useEffect, useState } from 'react'
 import DialogConfirm from '@/components/DialogConfirm';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -23,8 +18,12 @@ import {
 import { format } from "date-fns";
 import { IoMdAdd } from 'react-icons/io';
 import { toast } from 'sonner';
-const Colors = () => {
-    const [colors, setColors] = useState<IColor[]>([]);
+import { ISize } from '@/interfaces/size';
+import { OptionsType, typeResponse } from '@/interfaces/options';
+import { getPaginate, hiddenSize, restoreSizeById } from '@/services/size';
+import { TableComponent } from '../../_components/TableComponent';
+const Sizes = () => {
+    const [colors, setColors] = useState<ISize[]>([]);
     const [openId, setOpenId] = useState<string | boolean>(false);
     const [openHidden, setOpenHidden] = useState<string | boolean>(false);
     const [options, setOptions] = useState<OptionsType>({
@@ -38,47 +37,43 @@ const Colors = () => {
         totalPages: 0,
         totalItems: 0,
     });
-    const handleColors = async () => {
+    const handleSize = async () => {
         try {
             const { data } = await getPaginate(options);
-            // console.log(data.content);
-            setColors(data?.content);
+            console.log(data)
+            setColors(data);
             setResponse({
                 currentPage: data.currentPage,
                 totalPages: data.totalPages,
                 totalItems: data.totalItems,
             })
-            return data?.content
         } catch (error) {
             console.log(error);
         }
     }
     useEffect(() => {
-        handleColors();
-    }, [options]);
-    const handlePageClick = (value: any) => {
-        setOptions({ ...options, page: +value.selected + 1 });
-    }
+        handleSize()
+    }, [options])
     const handleHidden = async (id: string | boolean) => {
         try {
-            await hiddenColor(id);
+            await hiddenSize(id);
+            handleSize();
             setOpenHidden(false);
-            handleColors();
-            toast.success("Ẩn màu sắc thành công");
+            toast.success("Ẩn kích cỡ thành công!");
         } catch (error) {
             console.log(error);
         }
     }
     const handleRestore = async (id: string) => {
         try {
-            await restoreColor(id);
-            handleColors();
-            toast.success("Khôi phúc màu sắc thành công");
+            await restoreSizeById(id);
+            handleSize();
+            toast.success("Khôi phục kích cỡ thành công!")
         } catch (error) {
             console.log(error);
         }
     }
-    const columns: ColumnDef<IColor>[] = [
+    const columns: ColumnDef<ISize>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -103,29 +98,30 @@ const Colors = () => {
         },
         {
             accessorKey: "name",
-            header: "Tên danh mục",
+            header: "Tên kích cỡ",
         },
         {
-            accessorKey: "code",
-            header: "Mã màu",
+            accessorKey: "minHeight",
+            header: "Chiều cao tối thiểu",
         },
         {
-            accessorKey: "code",
-            header: "Màu",
-            cell: ({ row }) => {
-                return (
-                    <div
-                        className="md:text-base text-xs w-8 h-8 border rounded-full"
-                        style={{ backgroundColor: `${row.original.code}` }}
-                    ></div>
-                );
-            },
+            accessorKey: "maxHeight",
+            header: "Chiều cao tối đa",
         },
+        {
+            accessorKey: "minWeight",
+            header: "Cân nặng tối thiểu",
+        },
+        {
+            accessorKey: "maxWeight",
+            header: "Cân nặng tối đa",
+        },
+
         {
             accessorKey: "createdAt",
             header: "Ngày tạo",
             cell: ({ row }) => {
-                const date = format(row.original.createdAt || row.original.deletedAt || " ", "dd-MM-yyyy")
+                const date = format(row.original.createdAt || " ", "dd-MM-yyyy")
                 return (
                     <div className="" > {date}</div>
                 )
@@ -140,7 +136,6 @@ const Colors = () => {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0">
-                                <span className="sr-only">Open menu</span>
                                 <DotsHorizontalIcon className="h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
@@ -168,36 +163,16 @@ const Colors = () => {
     return (
         <>
             <div className="flex justify-between items-center py-4">
-                <h3 className="text-xl font-medium">Quản lý màu sắc</h3>
-                <Button onClick={() => setOpenId(true)} className='flex gap-1'><IoMdAdd size={20} /> Danh mục</Button>
+                <h3 className="text-xl font-medium">Quản lý kích cỡ</h3>
+                <Button onClick={() => setOpenId(true)} className='flex gap-1'><IoMdAdd size={20} /> Kích cỡ</Button>
             </div>
             <div className="">
-                <Tabs value={`${options.tab}`} className="w-[100%]">
-                    <TabsList className="grid w-full grid-cols-2">
-                        <TabsTrigger value="1" onClick={() => { setOptions((prev: any) => ({ ...prev, tab: 1 })) }}>Danh mục</TabsTrigger>
-                        <TabsTrigger value="2" onClick={() => { setOptions((prev: any) => ({ ...prev, tab: 2 })) }}>Danh mục đã ẩn</TabsTrigger>
-                    </TabsList>
-
-                </Tabs>
-                <TableComponent
-                    data={colors}
-                    columns={columns}
-                    pageCount={response.totalPages}
-                    handlePageClick={handlePageClick}
-                />
+                {/* <TableComponent
+                data={}
+                /> */}
             </div>
-            {!!openHidden && (
-                <DialogConfirm
-                    open={!!openHidden}
-                    handleClose={() => setOpenHidden(false)}
-                    handleSubmit={() => handleHidden(openHidden)}
-                    title="��n màu sắc"
-                    content={`Bạn có chắc muốn ẩn màu  ${colors?.find((c) => c._id === openHidden)?.name}?`}
-                    labelConfirm='Ẩn'
-                />
-            )}
         </>
     )
 }
 
-export default Colors
+export default Sizes

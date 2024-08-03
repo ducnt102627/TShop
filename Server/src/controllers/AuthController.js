@@ -143,8 +143,22 @@ export const logout = async (req, res) => {
                 message: "Bạn chưa đăng nhập ",
             });
         }
-        console.log(refreshToken)
-
+        jwt.verify(refreshToken, process.env.SECRET_REFRESH_TOKEN, async (err, data) => {
+            if (err) {
+                res.cookie("token", "", {
+                    maxAge: 0,
+                });
+                return res.status(STATUS.OK).json({
+                    message: "Đăng xuất thành công",
+                });
+            }
+            res.cookie("token", " ", {
+                maxAge: 0
+            });
+            return res.status(STATUS.OK).json({
+                message: "Đăng xuất thành công",
+            });
+        })
     } catch (error) {
         return res.status(STATUS.INTERNAL).json({
             message: error.message,

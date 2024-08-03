@@ -6,6 +6,8 @@ import { Route, Routes } from "react-router-dom";
 import CategoryAdmin from "@/pages/(admin)/category/page";
 import CategoryForm from "@/pages/(admin)/category/_component/CategoryForm";
 import ShopPage from "@/pages/(website)/shop/page";
+import ColorAdmin from "@/pages/(admin)/color/page";
+import SizeAdmin from "@/pages/(admin)/size/page";
 
 const Router = () => {
     return (
@@ -18,6 +20,8 @@ const Router = () => {
                 <Route path="admin" element={<LayoutAdmin />}>
                     <Route index element={<Dashboard />} />
                     <Route path="category" element={<CategoryAdmin />} />
+                    <Route path="colors" element={<ColorAdmin />} />
+                    <Route path="sizes" element={<SizeAdmin />} />
                     {/* <Route path="category/add" element={<CategoryForm />} /> */}
                 </Route>
             </Routes>

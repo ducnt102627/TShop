@@ -1,9 +1,9 @@
 import React from 'react'
-import Categorise from './_component/Categorise'
+import Categories from './_component/Categories'
 
 const CategoryAdmin = () => {
     return (
-        <> <Categorise /></>
+        <> <Categories /></>
     )
 }
 

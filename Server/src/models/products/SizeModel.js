@@ -16,5 +16,4 @@ const sizeSchema = new mongoose.Schema(
     { timestamps: true }
 )
 sizeSchema.plugin(mongoosePaginate);
-sizeSchema.plugin(MongooseDelete, { deletedAt: true, overrideMethods: "all" });
 export default mongoose.model("Size", sizeSchema)
