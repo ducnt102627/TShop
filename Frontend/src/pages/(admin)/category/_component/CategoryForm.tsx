@@ -1,38 +1,37 @@
-import React, { useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
     DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
+    DialogTrigger
 } from "@/components/ui/dialog"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { useEffect } from 'react'
 import { z } from "zod"
 
 import {
     Form,
     FormControl,
-    FormDescription,
     FormField,
     FormItem,
     FormLabel,
-    FormMessage,
+    FormMessage
 } from "@/components/ui/form"
 
+import instance from '@/configs/axios'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from 'react-hook-form'
-import instance from '@/configs/axios'
 import { toast } from 'sonner'
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query"
+import { ICategory } from "@/interfaces/category"
 interface FormDialog {
     open: boolean | string;
     title?: "Thêm danh mục" | "Cập nhật";
     labelConfirm?: string;
     handleClose: () => void;
-    handlePaging: () => void;
+    handlePaging?: () => void;
 }
 const formSchema = z.object({
     name: z
@@ -49,53 +48,82 @@ const CategoryForm = ({
     handleClose,
     handlePaging,
 }: FormDialog) => {
+    const queryClinet = useQueryClient();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             name: "",
         },
     })
-    console.log(open);
-    const handleAdd = async (dataForm: any) => {
-        try {
-            const { data } = await instance.post(`/category/add`, dataForm);
-            form.reset;
+    // console.log(open);
+    const { data } = useQuery({
+        queryKey: ['category', open],
+        queryFn: async () => {
+            const { data } = await instance.get(`/category/get/${open}`);
+            form.reset(data.data)
+            return data;
+        },
+    })
+    const { mutate } = useMutation({
+        mutationFn: async (category: ICategory) => {
+            if (typeof open === "string") {
+                return await instance.put(`/category/update/${open}`, category);
+            } else {
+                return await instance.post(`/category/add`, category);
+            }
+        },
+        onSuccess: () => {
+            if (typeof open === "string") {
+                handleClose();
+                toast.success("Bạn đã cập nhật danh mục thành công");
+                queryClinet.invalidateQueries({
+                    queryKey: ['categories'],
+                })
+            } else {
+                handleClose();
+                toast.success("Bạn đã thêm danh mục thành công");
+            }
+        },
+        onError: () => {
             handleClose();
-            handlePaging();
-            toast.success("Bạn đã thêm danh mục thành công");
-        } catch (error) {
-            console.log(error);
-            toast.error("Vui lòng thử lại")
+            toast.success("Vui lòng thử lại!")
         }
-    }
-    useEffect(() => {
-        if (typeof open === "string") {
-            (async () => {
-                try {
-                    const { data } = await instance.get(`/category/get/${open}`);
-                    form.reset(data.data);
-                } catch (error) {
-                    console.error("Error:", error);
-                }
-            })();
-        }
-    }, [open]);
-    const handleUpdate = async (dataForm: { name: string }) => {
-        try {
-            const { data } = await instance.put(`/category/update/${open}`, dataForm);
-            handleClose();
-            handlePaging();
-            toast.success("Bạn đã cập nhật danh mục thành công")
-        } catch (error) {
-            console.log(error)
-        }
-    }
-    const onSubmit = (data: { name: string }) => {
-        if (typeof open === "string") {
-            handleUpdate(data)
-        } else {
-            handleAdd(data)
-        }
+    })
+
+    // const handleAdd = async (dataForm: any) => {
+    //     try {
+    //         const { data } = await instance.post(`/category/add`, dataForm);
+    //         form.reset;
+    //         handleClose();
+    //         toast.success("Bạn đã thêm danh mục thành công");
+    //     } catch (error) {
+    //         console.log(error);
+    //         toast.error("Vui lòng thử lại")
+    //     }
+    // }
+    // useEffect(() => {
+    //     if (typeof open === "string") {
+    //         (async () => {
+    //             try {
+    //                 const { data } = await instance.get(`/category/get/${open}`);
+    //                 form.reset(data.data);
+    //             } catch (error) {
+    //                 console.error("Error:", error);
+    //             }
+    //         })();
+    //     }
+    // }, [open]);
+    // const handleUpdate = async (dataForm: { name: string }) => {
+    //     try {
+    //         const { data } = await instance.put(`/category/update/${open}`, dataForm);
+    //         handleClose();
+    //         toast.success("Bạn đã cập nhật danh mục thành công")
+    //     } catch (error) {
+    //         console.log(error)
+    //     }
+    // }
+    const onSubmit = (data: ICategory) => {
+        mutate(data)
     }
     return (
         <>

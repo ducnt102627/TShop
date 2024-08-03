@@ -1,4 +1,5 @@
 import ColorModel from "../models/products/ColorModel";
+import SizeModel from "../models/products/SizeModel";
 import STATUS from "../utils/status";
 import { colorValidate } from "../validation/productValidate";
 
@@ -46,29 +47,44 @@ export const updateColor = async () => {
 }
 export const getAllColor = async (req, res) => {
     try {
-        const { _page = 1, _limit = 10, sort = "createAt", _order = "asc" } = req.query;
-        const option = {
-            page: _page,
-            limit: _limit,
-            sort: { [sort]: _order === "desc" ? 1 : -1 }
-        }
-        const data = await ColorModel.paginate({}, option);
-        if (!data.docs) {
+        const data = await ColorModel.find();
+        if (!data) {
             return res.status(STATUS.BAD_REQUEST).json({
-                message: "Không có màu nào"
+                message: "Không có màu nào",
             })
         }
-        const response = {
-            colors: data.docs,
-            pagination: {
-                currentPage: data.page,
-                totalPages: data.totalPages,
-                totalItems: data.totalDocs
-            }
-        }
-        return res.status(STATUS.OK).json({
-            message: "Danh sách màu", response
+        return res.status(STATUS.OK).json(data)
+    } catch (error) {
+        return res.status(STATUS.INTERNAL).json({
+            message: error.message
         })
+    }
+}
+export const getListPaginate = async (req, res) => {
+    try {
+        const { sort = "createAt", _order = "asc" } = req.query;
+        const { page = 1, pageSize } = req.body;
+        let limit = pageSize || 10;
+
+        const option = {
+            page: page,
+            limit,
+            sort: { [sort]: _order === "desc" ? 1 : -1 }
+        }
+        const query = { deleted: tab === 2 }
+        const data = await ColorModel.paginate(query, option);
+        if (!data.docs || data.docs.length === 0) {
+            const message = tab === 1 ? "Không có màu nào" : "Không có màu đã xóa"
+            return res.status(STATUS.BAD_REQUEST).json({ message })
+        }
+        const result = {
+            content: data.docs,
+            limit,
+            currentPage: data.page,
+            totalPages: data.totalPages,
+            totalItems: data.totalDocs
+        }
+        return res.status(STATUS.OK).json(result)
 
     } catch (error) {
         return res.status(STATUS.INTERNAL).json({
@@ -93,32 +109,10 @@ export const getColorById = async (req, res) => {
         })
     }
 }
-export const getDeletedAll = async (req, res) => {
-    try {
-        const colors = await ColorModel.findDeleted({});
-        if (!colors) {
-            return res.status(STATUS.BAD_REQUEST).json({
-                message: "Không có màu nào",
-            })
-        }
-        const colorsDeleted = colors.docs.filter(color => color.deleted === true);
-        if (colorsDeleted.length === 0) {
-            return res.status(STATUS.BAD_REQUEST).json({
-                message: "Không có màu nào đã xóa",
-            })
-        }
-        return res.status(STATUS.OK).json({
-            message: "Danh sách đã xóa", colorsDeleted
-        })
-    } catch (error) {
-        return res.status(STATUS.INTERNAL).json({
-            message: error.message
-        })
-    }
-}
+
 export const deleteSortColor = async (req, res) => {
     try {
-        const colorDeleted = await ColorModel.delete({ _id: req.params.id });
+        const colorDeleted = await ColorModel.findByIdAndUpdate({ _id: req.params.id }, { deleted: true }, { new: true })
         if (!colorDeleted) {
             return res.status(STATUS.BAD_REQUEST).json({
                 message: "Xóa không thành công",
@@ -152,10 +146,10 @@ export const deleteColorForever = async (req, res) => {
 }
 export const restoreColorById = async (req, res) => {
     try {
-        const data = await ColorModel.restore({ _id: req.params.id });
+        const data = await ColorModel.findByIdAndUpdate({ _id: req.params.id }, { deleted: false }, { new: true })
         if (!data) {
             return res.status(STATUS.BAD_REQUEST).json({
-                message: "Khôi phục không thành công",
+                message: "Khôi phục thất bại",
             })
         }
         return res.status(STATUS.OK).json({

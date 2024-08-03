@@ -43,24 +43,41 @@ export const updateSize = async (req, res) => {
 }
 export const getAllSize = async (req, res) => {
     try {
-        const { _page = 1, _limit = 10, sort = "createAt", _order = "asc" } = req.query;
+        const data = await SizeModel.find();
+        if (!data) {
+            return res.status(STATUS.BAD_REQUEST).json({
+                message: "Không có kích c�� nào",
+            })
+        }
+        return res.status(STATUS.OK).json(data)
+    } catch (error) {
+
+    }
+}
+export const getListPaginate = async (req, res) => {
+    try {
+        const { sort = "createAt", _order = "asc" } = req.query;
+        const { page = 1, pageSIze, tab = 1 } = req.body;
+        const limit = pageSIze || 10;
         const option = {
-            page: _page,
-            limit: _limit,
+            page: page,
+            limit,
             sort: { [sort]: _order === "desc" ? 1 : -1 }
         }
-        const data = await SizeModel.paginate({}, option);
-        const response = {
-            sizes: data.docs,
-            pagination: {
-                currentPage: data.page,
-                totalPages: data.totalPages,
-                totalItems: data.totalDocs,
-            }
+        const query = { deleted: tab === 2 }
+        const data = await SizeModel.paginate(query, option);
+        if (!data.docs || data.docs.length === 0) {
+            const message = tab === 1 ? "Không có kich cỡ nào" : "Không có kích cỡ đã xóa";
+            return res.status(STATUS.BAD_REQUEST).json({ message });
         }
-        return res.status(STATUS.OK).json({
-            message: "Danh sách kích cỡ", response
-        })
+        const result = {
+            sizes: data.docs,
+            limit,
+            currentPage: data.page,
+            totalPages: data.totalPages,
+            totalItems: data.totalDocs,
+        }
+        return res.status(STATUS.OK).json(result)
     } catch (error) {
         return res.status(STATUS.INTERNAL).json({
             message: error.message,
@@ -86,7 +103,7 @@ export const getSizeById = async (req, res) => {
 }
 export const deleteSortSize = async (req, res) => {
     try {
-        const deletedSize = await SizeModel.delete({ _id: req.params.id });
+        const deletedSize = await SizeModel.findByIdAndUpdate({ _id: req.params.id }, { deleted: true }, { new: true })
         if (!deletedSize) {
             return res.status(STATUS.BAD_REQUEST).json({
                 message: "Xóa không thành công",
@@ -120,7 +137,7 @@ export const deleteSizeForever = async (req, res) => {
 }
 export const restoreSizeById = async (req, res) => {
     try {
-        const data = await SizeModel.restore({ _id: req.params.id });
+        const data = await SizeModel.findByIdAndUpdate({ _id: req.params.id }, { deleted: false }, { new: true })
         if (!data) {
             return res.status(STATUS.BAD_REQUEST).json({
                 message: "Khôi phục không thành công"
@@ -128,30 +145,6 @@ export const restoreSizeById = async (req, res) => {
         }
         return res.status(STATUS.OK).json({
             message: "Khôi phục thành công", data
-        })
-    } catch (error) {
-        return res.status(STATUS.INTERNAL).json({
-            message: error.message,
-        })
-    }
-}
-export const getDeletedAll = async (req, res) => {
-    try {
-        const data = await SizeModel.findDeleted({});
-        console.log(data)
-        if (!data) {
-            return res.status(STATUS.BAD_REQUEST).json({
-                message: "Không có kích cỡ nào đã xóa",
-            })
-        }
-        const sizeDeleted = data.filter(size => size.deleted === true);
-        if (sizeDeleted.length === 0) {
-            return res.status(STATUS.BAD_REQUEST).json({
-                message: "Không có kích cỡ nào đã xóa",
-            })
-        }
-        return res.status(STATUS.OK).json({
-            message: "Danh sách đã xóa", sizeDeleted
         })
     } catch (error) {
         return res.status(STATUS.INTERNAL).json({

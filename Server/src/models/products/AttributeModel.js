@@ -19,6 +19,10 @@ const attributeSchema = new mongoose.Schema(
         quantity: {
             type: Number,
             required: true
+        },
+        deleted: {
+            type: Boolean,
+            default: false,
         }
     },
     { timestamps: true }

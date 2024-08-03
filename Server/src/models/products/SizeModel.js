@@ -8,6 +8,10 @@ const sizeSchema = new mongoose.Schema(
         maxHeight: { type: Number, required: true },
         minWeight: { type: Number, required: true },
         maxWeight: { type: Number, required: true },
+        deleted: {
+            type: Boolean,
+            default: false,
+        }
     },
     { timestamps: true }
 )

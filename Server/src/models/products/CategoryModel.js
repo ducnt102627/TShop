@@ -10,10 +10,14 @@ const CategorySchema = new mongoose.Schema(
         slug: {
             type: String,
             unique: true,
+        },
+        deleted: {
+            type: Boolean,
+            default: false,
         }
     },
     { timestamps: true, versionKey: false }
 )
 CategorySchema.plugin(mongoosePaginate);
-CategorySchema.plugin(mongooseDelete, { deletedAt: true, overrideMethods: 'all' })
+// CategorySchema.plugin(mongooseDelete, { deletedAt: true, overrideMethods: 'all' })
 export default mongoose.model("Category", CategorySchema)

@@ -5,6 +5,10 @@ import mongooseDelete from "mongoose-delete"
 const colorSchema = new mongoose.Schema({
     name: { type: String, required: true },
     code: { type: String, required: true },
+    deleted: {
+        type: Boolean,
+        default: false,
+    }
 }, { timestamps: true }
 )
 colorSchema.plugin(mongoosePaginate);

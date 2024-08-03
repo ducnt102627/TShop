@@ -46,26 +46,30 @@ export const updateCategory = async (req, res) => {
 }
 export const getAll = async (req, res) => {
     try {
-        const { limitCustom, pageIndex } = req.body;
-        const { _page = 1, _limit = 5, sort = "createAt", _order = "asc" } = req.query;
-        const option = {
-            page: _page || pageIndex,
-            limit: _limit || limitCustom,
+        const { sort = "createAt", _order = "asc" } = req.query;
+        const { page = 1, pageSize, tab = 1 } = req.body;
+        let limit = pageSize || 10
+        const options = {
+            page: req.query.page || page,
+            limit,
             sort: { [sort]: _order === "desc" ? 1 : -1 }
         }
-        const data = await CategoryModel.paginate({}, option)
-        // console.log(data)
-        if (!data.docs) {
-            return res.status(STATUS.BAD_REQUEST).json({ message: "Không có danh mục nào" })
+
+        const query = { deleted: tab === 2 };
+        const data = await CategoryModel.paginate(query, options);
+
+        if (!data.docs || data.docs.length === 0) {
+            const message = tab === 1 ? "Không có danh mục nào" : "Không có danh mục đã xóa";
+            return res.status(STATUS.BAD_REQUEST).json({ message });
         }
+
         const result = {
             content: data.docs,
+            limit,
             currentPage: data.page,
             totalPages: data.totalPages,
             totalItems: data.totalDocs
-
         }
-        // console.log("response: ", response)
         return res.status(STATUS.OK).json(result)
     } catch (error) {
         return res.status(STATUS.INTERNAL).json({
@@ -90,33 +94,9 @@ export const getById = async (req, res) => {
         })
     }
 }
-export const getAllDeleted = async (req, res) => {
-    try {
-        const data = await CategoryModel.findDeleted({});
-        // console.log("data deleted", data)
-        if (!data) {
-            return res.status(STATUS.BAD_REQUEST).json({
-                message: "Khong co danh muc nao"
-            })
-        }
-        const deletedData = data.filter(category => category.deleted === true);
-        if (deletedData.length === 0) {
-            return res.json({
-                message: "Khong co danh muc da xoa"
-            })
-        }
-        return res.status(STATUS.OK).json({
-            message: "Danh muc da xoa", data
-        })
-    } catch (error) {
-        return res.status(STATUS.INTERNAL).json({
-            message: error.message
-        })
-    }
-}
 export const deleteSortCategory = async (req, res) => {
     try {
-        const data = await CategoryModel.delete({ _id: req.params.id });
+        const data = await CategoryModel.findByIdAndUpdate({ _id: req.params.id }, { deleted: true }, { new: true });
         if (!data) {
             return res.status(STATUS.BAD_REQUEST).json({
                 message: "Xóa không thành công",
@@ -150,7 +130,7 @@ export const deleteForeverCategory = async (req, res) => {
 }
 export const restoreCategoryById = async (req, res) => {
     try {
-        const data = await CategoryModel.restore({ _id: req.params.id });
+        const data = await CategoryModel.findByIdAndUpdate({ _id: req.params.id }, { deleted: false }, { new: true });
         if (!data) {
             return res.status(STATUS.body).json({
                 message: "Khôi phục thất bại"

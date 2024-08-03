@@ -114,7 +114,7 @@ export function TableComponent<TData, TValue>({ columns, data, pageCount, handle
                                         colSpan={columns.length}
                                         className="h-24 text-center"
                                     >
-                                        No results.
+                                        Không có giá trị.
                                     </TableCell>
                                 </TableRow>
                             )}
