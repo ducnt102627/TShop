@@ -12,7 +12,12 @@ app.use(morgan("tiny"));
 console.log(process.env.URL_FRONTEND);
 
 app.use(cors(
-    { origin: process.env.URL_FRONTEND }
+    {
+        origin: process.env.URL_FRONTEND,
+        credentials: true,
+        methods: "GET, POST, OPTIONS, PUT, PATCH, DELETE",
+        allowedHeaders: ["X-Requested-With", "Content-Type", "Authorization"],
+    }
 ));
 app.use(cookieParser());
 
