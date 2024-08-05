@@ -8,6 +8,8 @@ import CategoryForm from "@/pages/(admin)/category/_component/CategoryForm";
 import ShopPage from "@/pages/(website)/shop/page";
 import ColorAdmin from "@/pages/(admin)/color/page";
 import SizeAdmin from "@/pages/(admin)/size/page";
+import ProductAdmin from "@/pages/(admin)/product/page";
+import ProductForm from "@/pages/(admin)/product/_components/ProductForm";
 
 const Router = () => {
     return (
@@ -20,6 +22,8 @@ const Router = () => {
                 <Route path="admin" element={<LayoutAdmin />}>
                     <Route index element={<Dashboard />} />
                     <Route path="category" element={<CategoryAdmin />} />
+                    <Route path="products" element={<ProductAdmin />} />
+                    <Route path="productAdd" element={<ProductForm />} />
                     <Route path="colors" element={<ColorAdmin />} />
                     <Route path="sizes" element={<SizeAdmin />} />
                     {/* <Route path="category/add" element={<CategoryForm />} /> */}

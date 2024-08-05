@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
-import mongoosePaginate from "mongoose-paginate-v2"
-import mongooseDelete from "mongoose-delete"
+import mongoosePaginate from "mongoose-paginate-v2";
 
 const colorSchema = new mongoose.Schema({
     name: { type: String, required: true },

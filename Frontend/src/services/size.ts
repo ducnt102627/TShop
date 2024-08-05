@@ -3,7 +3,7 @@ import { OptionsType } from "@/interfaces/options";
 import { ISize } from "@/interfaces/size";
 
 export const getPaginate = (options: OptionsType) => {
-    const uri = `/size/paginate/${options}`;
+    const uri = `/size/paginate`;
     return instance.post(uri, options);
 }
 export const addSize = (data: ISize) => {

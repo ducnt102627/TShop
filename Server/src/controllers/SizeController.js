@@ -57,8 +57,8 @@ export const getAllSize = async (req, res) => {
 export const getListPaginate = async (req, res) => {
     try {
         const { sort = "createAt", _order = "asc" } = req.query;
-        const { page = 1, pageSIze, tab = 1 } = req.body;
-        const limit = pageSIze || 10;
+        const { page = 1, pageSize, tab = 1 } = req.body;
+        const limit = pageSize || 10;
         const option = {
             page: page,
             limit,

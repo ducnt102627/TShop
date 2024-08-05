@@ -15,7 +15,7 @@ export const productValidate = Joi.object({
     name: Joi.string().required().messages({}),
     category: Joi.string().required().messages({}),
     price: Joi.number().required().messages({}),
-    Image: Joi.string().required().messages({}),
+    image: Joi.array().required().messages({}),
     thumbnail: Joi.array().messages({}),
     description: Joi.string().required().min(12).max(300).messages({}),
     discount: Joi.number(),
@@ -24,7 +24,7 @@ export const productValidate = Joi.object({
     countInStock: Joi.number(),
     featured: Joi.boolean(),
     tags: Joi.array().items(Joi.string()),
-    attribute: Joi.array().items(Joi.string().required().messages({}))
+    attribute: Joi.array().items(Joi.object().required().messages({}))
 })
 export const categoryValidate = Joi.object({
     name: Joi.string().required().messages({}),

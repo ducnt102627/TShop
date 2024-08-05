@@ -3,7 +3,7 @@ import { addSize, deleteSizeForever, deleteSortSize, getAllSize, getListPaginate
 
 const sizeRouter = Router();
 
-sizeRouter.get('/get', getAllSize);
+sizeRouter.get('/getAll', getAllSize);
 sizeRouter.post('/paginate', getListPaginate);
 sizeRouter.get('/get/:id', getSizeById);
 sizeRouter.post('/add', addSize);

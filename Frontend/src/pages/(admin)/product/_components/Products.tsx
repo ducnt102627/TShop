@@ -1,35 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import DialogConfirm from '@/components/DialogConfirm';
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
     DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
     DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { OptionsType, typeResponse } from '@/interfaces/options';
+import { IProduct } from "@/interfaces/product";
+import { getPaginate } from "@/services/product";
 import {
     DotsHorizontalIcon
 } from "@radix-ui/react-icons";
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
     ColumnDef
 } from "@tanstack/react-table";
 import { format } from "date-fns";
-import { IoMdAdd } from 'react-icons/io';
-import { toast } from 'sonner';
-import { ISize } from '@/interfaces/size';
-import { OptionsType, typeResponse } from '@/interfaces/options';
-import { getAllSizes, getPaginate, hiddenSize, restoreSizeById } from '@/services/size';
-import { TableComponent } from '../../_components/TableComponent';
-import { size } from 'lodash';
-const Sizes = () => {
-    const [sizes, setSizes] = useState<ISize[]>([]);
-    const [openId, setOpenId] = useState<string | boolean>(false);
-    const [openHidden, setOpenHidden] = useState<string | boolean>(false);
+import { useState } from 'react';
+import { TableComponent } from "../../_components/TableComponent";
+import { IoMdAdd } from "react-icons/io";
+import { Link } from "react-router-dom";
+
+const Products = () => {
+    const queryClient = useQueryClient();
     const [options, setOptions] = useState<OptionsType>({
         page: 1,
-        pageSize: 3,
+        pageSize: 10,
         sort: 1,
         tab: 1,
     });
@@ -38,43 +33,24 @@ const Sizes = () => {
         totalPages: 0,
         totalItems: 0,
     });
-    const handleSize = async () => {
-        try {
-            const { data } = await getAllSizes();
-            setSizes(data);
-            // setResponse({
-            //     currentPage: data.currentPage,
-            //     totalPages: data.totalPages,
-            //     totalItems: data.totalItems,
-            // })
-        } catch (error) {
-            console.log(error);
+    const { data } = useQuery({
+        queryKey: ['products', options],
+        queryFn: async () => {
+            try {
+                const { data } = await getPaginate(options);
+                console.log(data)
+                setResponse({
+                    currentPage: data.currentPage,
+                    totalPages: data.totalPages,
+                    totalItems: data.totalItems,
+                });
+                return data;
+            } catch (error) {
+                console.log(error);
+            }
         }
-    }
-    useEffect(() => {
-        handleSize()
-    }, [])
-
-    const handleHidden = async (id: string | boolean) => {
-        try {
-            const { data } = await hiddenSize(id);
-            setSizes((size) => size.filter((item: ISize) => item._id !== id))
-            setOpenHidden(false);
-            toast.success("Ẩn kích cỡ thành công!");
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    const handleRestore = async (id: string) => {
-        try {
-            await restoreSizeById(id);
-            handleSize();
-            toast.success("Khôi phục kích cỡ thành công!")
-        } catch (error) {
-            console.log(error);
-        }
-    }
-    const columns: ColumnDef<ISize>[] = [
+    })
+    const columns: ColumnDef<IProduct>[] = [
         {
             id: "select",
             header: ({ table }) => (
@@ -99,25 +75,30 @@ const Sizes = () => {
         },
         {
             accessorKey: "name",
-            header: "Tên kích cỡ",
+            header: "Tên sản phẩm",
         },
         {
-            accessorKey: "minHeight",
-            header: "Chiều cao tối thiểu (cm)",
+            accessorKey: "image ",
+            header: "Ảnh",
+            cell: ({ row }) => {
+                const image = row?.original?.image;
+                return (
+                    <img src={image} width={100} height={50} alt="" />
+                )
+            }
         },
         {
-            accessorKey: "maxHeight",
-            header: "Chiều cao tối đa (cm)",
+            accessorKey: "price",
+            header: "Giá",
         },
         {
-            accessorKey: "minWeight",
-            header: "Cân nặng tối thiểu (cm)",
+            accessorKey: "quantity",
+            header: "Số lượng",
         },
         {
-            accessorKey: "maxWeight",
-            header: "Cân nặng tối đa (cm)",
+            accessorKey: "description",
+            header: "Mô tả",
         },
-
         {
             accessorKey: "createdAt",
             header: "Ngày tạo",
@@ -137,11 +118,12 @@ const Sizes = () => {
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>
                             <Button variant="ghost" className="h-8 w-8 p-0">
+                                <span className="sr-only">Open menu</span>
                                 <DotsHorizontalIcon className="h-4 w-4" />
                             </Button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => setOpenId(row?.original._id)}>
+                        {/* <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => setOpenId(row.original._id)}>
                                 Sửa
                             </DropdownMenuItem>
                             {row?.original?.deleted ? (
@@ -154,7 +136,7 @@ const Sizes = () => {
                                     Ẩn
                                 </DropdownMenuItem>
                             )}
-                        </DropdownMenuContent>
+                        </DropdownMenuContent> */}
                     </DropdownMenu>
                 )
             },
@@ -164,28 +146,20 @@ const Sizes = () => {
     return (
         <>
             <div className="flex justify-between items-center py-4">
-                <h3 className="text-xl font-medium">Quản lý kích cỡ</h3>
-                <Button onClick={() => setOpenId(true)} className='flex gap-1'><IoMdAdd size={20} /> Kích cỡ</Button>
+                <h3 className="text-xl font-medium">Quản lý sản phẩm</h3>
+                <Link to="/admin/productAdd">
+                    <Button className='flex gap-1'><IoMdAdd size={20} /> Sản phẩm</Button>
+                </Link>
             </div>
             <div className="">
                 <TableComponent
-                    data={sizes}
+                    data={data?.content || ""}
                     columns={columns}
-                    pageCount={response}
+                    pageCount={response.totalPages}
                 />
             </div>
-            {!!openHidden && (
-                <DialogConfirm
-                    open={!!openHidden}
-                    title="Ẩn kích cỡ"
-                    content={`Bạn có chắc muốn ẩn kích cỡ ${sizes.find((s) => s._id === openHidden)?.name} không?`}
-                    handleSubmit={() => handleHidden(openHidden)}
-                    handleClose={() => setOpenHidden(false)}
-                    labelConfirm='Ẩn'
-                />
-            )}
         </>
     )
 }
 
-export default Sizes
+export default Products

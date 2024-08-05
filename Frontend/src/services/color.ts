@@ -19,7 +19,7 @@ export const hiddenColor = (id: string | boolean) => {
     return instance.delete(uri);
 }
 export const getAllColors = () => {
-    const uri = `/color/getAll`;
+    const uri = `color/getAll`;
     return instance.get(uri);
 }
 export const getColorById = (id: string) => {

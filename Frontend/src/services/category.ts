@@ -1,11 +1,12 @@
 import instance from "@/configs/axios";
 import { ICategory } from "@/interfaces/category";
+import { OptionsType } from "@/interfaces/options";
 
-export const getAllCategories = (options: any) => {
+export const getAllCategories = () => {
     const uri = `/category/getAll`;
     return instance.get(uri);
 }
-export const getPaginate = (options: any) => {
+export const getPaginate = (options: OptionsType) => {
     const uri = `/category/getListPag`;
     return instance.post(uri, options);
 }

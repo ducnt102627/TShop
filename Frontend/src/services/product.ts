@@ -1,69 +1,32 @@
-// import instance from '@/configs/axios'
-// import { IProduct } from '@/common/types/product'
-// const userDataString = localStorage.getItem('user');
-// let token = '';
-// if (userDataString) {
-//     try {
-//         const userData = JSON.parse(userDataString);
-//         token = userData.token || '';
-//     } catch (error) {
-//         console.error('Không thể phân tích dữ liệu từ localStorage:', error);
-//     }
-// }
-// // eslint-disable-next-line @typescript-eslint/no-explicit-any
-// export const getAllProducts = async (params?: any): Promise<IProduct[]> => {
-//     try {
-//         const response = await instance.get('/products', { params })
-//         return response.data
-//     } catch (error) {
-//         return []
-//     }
-// }
-// export const getProductById = async (id: number | string) => {
-//     try {
-//         const response = await instance.get(`/products/${id}`)
-//         return response.data
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
-// export const addProduct = async (product: IProduct) => {
-//     try {
-//         const response = await instance.post(`/products`, product, {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 "Authorization": "Bearer " + token ? token : ''
-//             },
-//         })
-//         return response.data
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
-// export const removeProduct = async (product: IProduct) => {
-//     try {
-//         const response = await instance.delete(`/products/${product._id}`, {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 "Authorization": "Bearer " + token ? token : ''
-//             },
-//         })
-//         return response.data
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
-// export const editProduct = async (product: IProduct) => {
-//     try {
-//         const response = await instance.put(`/products/${product._id}`, product, {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 "Authorization": "Bearer " + token ? token : ''
-//             },
-//         })
-//         return response.data
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }
+import instance from "@/configs/axios";
+import { OptionsType } from "@/interfaces/options";
+import { IProduct } from "@/interfaces/product";
 
+export const getPaginate = (options: OptionsType) => {
+    const uri = `/product/paginate`;
+    return instance.post(uri, options);
+}
+export const addProduct = (data: IProduct) => {
+    const uri = `/product/add`;
+    return instance.post(uri, data);
+}
+export const upateProduct = (data: IProduct) => {
+    const uri = `/product/update/${data._id}`;
+    return instance.post(uri, data);
+}
+export const getProductById = (id: string) => {
+    const uri = `/product/get/${id}`;
+    return instance.get(uri);
+}
+export const updateProduct = (data: IProduct) => {
+    const uri = `/product/update/${data._id}`;
+    return instance.put(uri, data);
+}
+export const hiddenProduct = (id: string | boolean) => {
+    const uri = `/product/delSort/${id}`;
+    return instance.delete(uri);
+}
+export const getAllProducts = () => {
+    const uri = `/product/getAll`;
+    return instance.get(uri);
+}

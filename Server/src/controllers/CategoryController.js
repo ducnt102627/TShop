@@ -77,6 +77,19 @@ export const getListPag = async (req, res) => {
         })
     }
 }
+export const getAll = async (req, res) => {
+    try {
+        const data = await CategoryModel.find({ deleted: false });
+        if (!data) {
+            return res.status(STATUS.BAD_REQUEST).json({
+                message: "Không có danh mục nào"
+            })
+        }
+        return res.status(STATUS.OK).json(data)
+    } catch (error) {
+
+    }
+}
 export const getById = async (req, res) => {
     try {
         const data = await CategoryModel.findById(req.params.id);

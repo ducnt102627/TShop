@@ -39,8 +39,6 @@ export function TableComponent<TData, TValue>(
     const table = useReactTable({
         data,
         columns,
-        rowSelection,
-        setRowSelection,
         getCoreRowModel: getCoreRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
     })

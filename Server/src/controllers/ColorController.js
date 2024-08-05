@@ -1,5 +1,4 @@
 import ColorModel from "../models/products/ColorModel";
-import SizeModel from "../models/products/SizeModel";
 import STATUS from "../utils/status";
 import { colorValidate } from "../validation/productValidate";
 
@@ -47,7 +46,7 @@ export const updateColor = async () => {
 }
 export const getAllColor = async (req, res) => {
     try {
-        const data = await ColorModel.find();
+        const data = await ColorModel.find({ deleted: false });
         if (!data) {
             return res.status(STATUS.BAD_REQUEST).json({
                 message: "Không có màu nào",
