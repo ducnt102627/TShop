@@ -48,7 +48,7 @@ const CategoryForm = ({
     handleClose,
     handlePaging,
 }: FormDialog) => {
-    const queryClinet = useQueryClient();
+    const queryClient = useQueryClient();
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -76,12 +76,15 @@ const CategoryForm = ({
             if (typeof open === "string") {
                 handleClose();
                 toast.success("Bạn đã cập nhật danh mục thành công");
-                queryClinet.invalidateQueries({
+                queryClient.invalidateQueries({
                     queryKey: ['categories'],
                 })
             } else {
                 handleClose();
                 toast.success("Bạn đã thêm danh mục thành công");
+                queryClient.invalidateQueries({
+                    queryKey: ['categories'],
+                })
             }
         },
         onError: () => {
@@ -89,39 +92,6 @@ const CategoryForm = ({
             toast.success("Vui lòng thử lại!")
         }
     })
-
-    // const handleAdd = async (dataForm: any) => {
-    //     try {
-    //         const { data } = await instance.post(`/category/add`, dataForm);
-    //         form.reset;
-    //         handleClose();
-    //         toast.success("Bạn đã thêm danh mục thành công");
-    //     } catch (error) {
-    //         console.log(error);
-    //         toast.error("Vui lòng thử lại")
-    //     }
-    // }
-    // useEffect(() => {
-    //     if (typeof open === "string") {
-    //         (async () => {
-    //             try {
-    //                 const { data } = await instance.get(`/category/get/${open}`);
-    //                 form.reset(data.data);
-    //             } catch (error) {
-    //                 console.error("Error:", error);
-    //             }
-    //         })();
-    //     }
-    // }, [open]);
-    // const handleUpdate = async (dataForm: { name: string }) => {
-    //     try {
-    //         const { data } = await instance.put(`/category/update/${open}`, dataForm);
-    //         handleClose();
-    //         toast.success("Bạn đã cập nhật danh mục thành công")
-    //     } catch (error) {
-    //         console.log(error)
-    //     }
-    // }
     const onSubmit = (data: ICategory) => {
         mutate(data)
     }

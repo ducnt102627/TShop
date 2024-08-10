@@ -1,12 +1,10 @@
-import { cn } from '@/common/lib/utils';
+import { cn, uploadFileCloudinary, upLoadFiles, uploadMultipleFileCloudinary } from '@/common/lib/utils';
 import formProductSchema from '@/common/validations/product';
+import { selectStyle } from '@/components/custom-style/selectCustom';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-// import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { uploadFileCloudinary } from '@/common/lib/utils';
-import { selectStyle } from '@/components/custom-style/selectCustom';
 import { Textarea } from '@/components/ui/textarea';
 import { IProduct } from '@/interfaces/product';
 import { getAllCategories } from '@/services/category';
@@ -19,9 +17,12 @@ import { useEffect, useState } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { CiCirclePlus } from "react-icons/ci";
 import { MdDelete } from "react-icons/md";
-import { useParams } from 'react-router-dom';
+import ImageUploading, { ImageListType } from 'react-images-uploading';
 import Select from 'react-select';
 import { toast } from 'sonner';
+import { AiFillCloseCircle, AiOutlineCloudUpload } from "react-icons/ai"
+import { useNavigate } from 'react-router-dom';
+
 
 const ProductForm = () => {
     const queryClient = useQueryClient();
@@ -29,6 +30,7 @@ const ProductForm = () => {
     const [sizes, setSizes] = useState([]);
     const [colors, setColors] = useState([]);
     const [images, setImages] = useState([]);
+    const navigate = useNavigate()
     const form = useForm({
         resolver: zodResolver(formProductSchema),
         defaultValues: {
@@ -59,25 +61,12 @@ const ProductForm = () => {
             ]
         }
     })
+    const maxNumber = 5;
     const control = form.control;
     const { fields, append, remove } = useFieldArray({
         control,
         name: "attribute"
     });
-    const { id } = useParams();
-    // const { data: product } = useQuery({
-    //     queryKey: ['product', id],
-    //     queryFn: async () => {
-    //         try {
-    //             const { data } = await getProductById(id as string);
-    //             console.log(data);
-    //             return data;
-    //         } catch (error) {
-    //             console.log(error);
-    //         }
-    //     }
-    // });
-    // console.log(product);
     const { mutate } = useMutation({
         mutationFn: async (product: IProduct) => {
             return addProduct(product)
@@ -86,7 +75,8 @@ const ProductForm = () => {
             toast.success("Thêm thành công");
             queryClient.invalidateQueries({
                 queryKey: ['product'],
-            })
+            }),
+                navigate('/admin/products')
         },
         onError: () => {
             toast.error("Vui lòng thử lại!");
@@ -108,24 +98,61 @@ const ProductForm = () => {
         })()
     }, [])
     // console.log("images", images)
+    // const hanldeUpload = async (e: any) => {
+    //     const files = e.target.files;
+    //     console.log(files)
+    //     // console.log(files)
+    //     if (!files) return;
+    //     const urls = await Promise.all(
+    //         Array.from(files).map(uploadFileCloudinary as any)
+    //     )
+    //     setImages(urls as [])
+    // }
+    // const onChange = async (imageList: any) => {
+    //     setImages(imageList);
+    //     const urls = await Promise.all(
+    //         imageList.map(async (image: any) => {
+    //             const url = await uploadFileCloudinary(image.file);
+    //             return url;
+    //         })
+    //     );
+    //     // Do something with urls, for example, set them in a state
+    //     console.log(urls);
+    // };
+    // const handleFileChangeArray = (event: any) => {
+    //     const files = Array.from(event.target.files)
+    //     setImages(files as [])
 
+    //     const previews: any[] = files.map((file: any) => {
+    //         const reader = new FileReader()
+    //         reader.readAsDataURL(file)
+    //         return new Promise((resolve) => {
+    //             reader.onloadend = () => {
+    //                 resolve(reader.result)
+    //             }
+    //         })
+    //     })
+    //     Promise.all(previews).then((previews: any) => {
+    //         setImages(previews)
+    //     })
+    // }
+    const onChangeImage = (imageList: ImageListType) => {
+        // data for submit
+        setImages(imageList as never[]);
+    };
     const onSubmit = async (product: any) => {
         try {
             if (!images || images.length === 0) {
-                console.log("chọn ảnh")
                 toast.error("Vui lòng chọn ít nhất 1 ảnh cho sản phẩm!");
                 return;
             }
-            // console.log(product.attribute, "attribute")
+            const dataImages = await upLoadFiles(images as any);
+            // return
             const attribute = product.attribute?.map((attribute: any) => (
                 { ...attribute, size: attribute.size._id, color: attribute.color._id }
             ))
-            const typeAtt = attribute[0];
-            console.log(typeAtt)
-            console.log(typeof typeAtt)
-            // console.log(newAttribute)
-            const data = { ...product, category: product.category._id, image: images, attribute: attribute }
-            console.log("product", data)
+            const data = { ...product, category: product.category._id, image: dataImages, attribute: attribute }
+            // console.log("product", data)
             mutate(data);
 
         } catch (error) {
@@ -151,7 +178,6 @@ const ProductForm = () => {
                                                 <FormControl>
                                                     <Input placeholder="" {...field} />
                                                 </FormControl>
-
                                                 <FormMessage />
                                             </FormItem>
                                         )}
@@ -218,22 +244,56 @@ const ProductForm = () => {
                                     <FormItem className='w-[50%]'>
                                         <FormLabel>Ảnh sản phẩm</FormLabel>
                                         <FormControl>
-                                            <Input type='file' multiple placeholder="" {...field}
-                                                onChange={async (e) => {
-                                                    const files = e.target.files;
-                                                    console.log(files)
-                                                    if (!files) return;
-                                                    const urls = await Promise.all(
-                                                        Array.from(files).map(uploadFileCloudinary)
-                                                    )
-                                                    setImages(urls as [])
-                                                }} />
+                                            <ImageUploading
+                                                multiple
+                                                value={images}
+                                                onChange={onChangeImage}
+                                                maxNumber={10}
+                                                dataURLKey="data_url"
+                                            >
+                                                {({
+                                                    imageList,
+                                                    onImageUpload,
+                                                    onImageRemoveAll,
+                                                    onImageUpdate,
+                                                    onImageRemove,
+                                                    isDragging,
+                                                    dragProps
+                                                }) => (
+                                                    <div className="border border-gray-200 rounded-lg p-3">
+                                                        <div className=" grid grid-cols-2 lg:grid-cols-3 gap-3">
+                                                            {imageList.map((image, index) => (
+                                                                <div key={index} className="relative w-[100px] h-[100px] flex border p-2 relative">
+                                                                    <img src={image['data_url']} alt="" width="100" className='cursor-pointer object-cover aspect-square ' />
+                                                                    <div className="absolute -top-2 -right-3">
+                                                                        <button className='' type="button" onClick={() => onImageRemove(index)}><AiFillCloseCircle size={20} /></button>
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                            <div className="w-full flex flex-col items-center justify-center">
+                                                                <button
+                                                                    type="button"
+                                                                    style={isDragging ? { color: 'red' } : undefined}
+                                                                    onClick={onImageUpload}
+                                                                    {...dragProps}
+                                                                    className={cn("flex flex-col items-center justify-center", images.length === maxNumber && "hidden")}
+                                                                >
+                                                                    <AiOutlineCloudUpload
+                                                                        size={50}
+                                                                        strokeWidth={1}
+                                                                    />
+                                                                </button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+                                            </ImageUploading>
                                         </FormControl>
                                         <FormMessage />
-                                        { }
                                     </FormItem>
                                 )}
                             />
+
                             <FormField
                                 control={form.control}
                                 name="featured"

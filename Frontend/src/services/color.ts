@@ -3,7 +3,7 @@ import { IColor } from "@/interfaces/color";
 import { OptionsType } from "@/interfaces/options";
 
 export const getPaginate = (options: OptionsType) => {
-    const uri = `/color/paginate?${options}`;
+    const uri = `/color/paginate`;
     return instance.post(uri, options);
 }
 export const addColor = (data: IColor) => {

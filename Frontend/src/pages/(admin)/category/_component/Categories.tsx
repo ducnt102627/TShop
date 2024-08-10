@@ -77,7 +77,7 @@ const Categories = () => {
             return data;
         },
         placeholderData: keepPreviousData,
-        staleTime: 5 * 60 * 1000, // 5 phút
+        staleTime: 3 * 60 * 1000,
         // cacheTime: 10 * 60 * 1000, // 10 phút
     })
     const { mutate: handleHidden } = useMutation({

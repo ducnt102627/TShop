@@ -6,6 +6,10 @@ export const getAllCategories = () => {
     const uri = `/category/getAll`;
     return instance.get(uri);
 }
+export const getCategory = (id: string) => {
+    const uri = `/category/get/${id}`;
+    return instance.get(uri);
+}
 export const getPaginate = (options: OptionsType) => {
     const uri = `/category/getListPag`;
     return instance.post(uri, options);

@@ -1,9 +1,10 @@
 import { Router } from "express";
-import { addAttribute, getAllAttributes } from "../../controllers/AttributeController";
+import { addAttribute, getAllAttributeById, getAllAttributes } from "../../controllers/AttributeController";
 
 const attributeRouter = Router();
 
 attributeRouter.post('/add', addAttribute);;
 attributeRouter.get('/getAll', getAllAttributes)
+attributeRouter.get('/get/:id', getAllAttributeById)
 
 export default attributeRouter;

@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom'
 const MainMenu = () => {
     return (
         <>
-            <div className="flex justify-center items-center  py-3">
+            <div className="flex justify-center items-center h-14">
                 <NavLink to="/" className="menu-item">Trang chủ</NavLink>
                 <NavLink to="/shop" className="menu-item">Sản phẩm</NavLink>
                 <NavLink to="/" className="menu-item">Bài viết</NavLink>

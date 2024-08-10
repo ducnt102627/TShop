@@ -23,13 +23,14 @@ import {
 import { format } from "date-fns";
 import { IoMdAdd } from 'react-icons/io';
 import { toast } from 'sonner';
+import ColorForm from './ColorForm';
 const Colors = () => {
     const [colors, setColors] = useState<IColor[]>([]);
     const [openId, setOpenId] = useState<string | boolean>(false);
     const [openHidden, setOpenHidden] = useState<string | boolean>(false);
     const [options, setOptions] = useState<OptionsType>({
         page: 1,
-        pageSize: 3,
+        pageSize: 10,
         sort: 1,
         tab: 1,
     });
@@ -186,6 +187,13 @@ const Colors = () => {
                     handlePageClick={handlePageClick}
                 />
             </div>
+            {!!openId && (
+                <ColorForm
+                    open={openId}
+                    handlePaging={() => handleColors()}
+                    handleClose={() => setOpenId(false)}
+                />
+            )}
             {!!openHidden && (
                 <DialogConfirm
                     open={!!openHidden}

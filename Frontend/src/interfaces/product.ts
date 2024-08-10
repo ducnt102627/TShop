@@ -16,5 +16,5 @@ export interface IProduct {
     tags?: string[];
     attribute: string[];
     featured?: boolean;
-    discount?: number;
+    discount: number;
 }

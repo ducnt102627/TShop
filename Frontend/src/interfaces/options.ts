@@ -1,7 +1,8 @@
 export interface OptionsType {
     page: number;
     pageSize: number;
-    sort?: 1 | -1;
+    sort?: string | number;
+    _order?: string;
     tab: 1;
     totalPages?: number;
     totalItems?: number;

@@ -17,7 +17,7 @@ export const productValidate = Joi.object({
     price: Joi.number().required().messages({}),
     image: Joi.array().required().messages({}),
     thumbnail: Joi.array().messages({}),
-    description: Joi.string().required().min(12).max(300).messages({}),
+    description: Joi.string().required().min(12).messages({}),
     discount: Joi.number(),
     quantitySold: Joi.number(),
     quantity: Joi.number(),

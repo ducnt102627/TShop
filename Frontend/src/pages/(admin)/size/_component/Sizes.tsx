@@ -171,7 +171,7 @@ const Sizes = () => {
                 <TableComponent
                     data={sizes}
                     columns={columns}
-                    pageCount={response}
+                    pageCount={response?.totalPages}
                 />
             </div>
             {!!openHidden && (

@@ -10,6 +10,8 @@ import ColorAdmin from "@/pages/(admin)/color/page";
 import SizeAdmin from "@/pages/(admin)/size/page";
 import ProductAdmin from "@/pages/(admin)/product/page";
 import ProductForm from "@/pages/(admin)/product/_components/ProductForm";
+import ProductUpdate from "@/pages/(admin)/product/_components/ProductUpdate";
+import ProductDetail from "@/pages/(website)/Product-Detail/page";
 
 const Router = () => {
     return (
@@ -18,12 +20,14 @@ const Router = () => {
                 <Route path="/" element={<LayoutWebsite />}>
                     <Route index element={<HomePage />} />
                     <Route path="shop" element={<ShopPage />} />
+                    <Route path="shop/:id" element={<ProductDetail />} />
                 </Route>
                 <Route path="admin" element={<LayoutAdmin />}>
                     <Route index element={<Dashboard />} />
                     <Route path="category" element={<CategoryAdmin />} />
                     <Route path="products" element={<ProductAdmin />} />
                     <Route path="productAdd" element={<ProductForm />} />
+                    <Route path="productEdit/:id" element={<ProductUpdate />} />
                     <Route path="colors" element={<ColorAdmin />} />
                     <Route path="sizes" element={<SizeAdmin />} />
                     {/* <Route path="category/add" element={<CategoryForm />} /> */}

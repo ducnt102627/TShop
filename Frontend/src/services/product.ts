@@ -18,6 +18,10 @@ export const getProductById = (id: string) => {
     const uri = `/product/get/${id}`;
     return instance.get(uri);
 }
+export const getProductBySlug = (slug: string) => {
+    const uri = `/product/get/slug/${slug}`;
+    return instance.get(uri);
+}
 export const updateProduct = (data: IProduct) => {
     const uri = `/product/update/${data._id}`;
     return instance.put(uri, data);
@@ -30,3 +34,6 @@ export const getAllProducts = () => {
     const uri = `/product/getAll`;
     return instance.get(uri);
 }
+export const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
+};

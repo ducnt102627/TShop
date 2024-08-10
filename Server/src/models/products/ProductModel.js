@@ -59,6 +59,18 @@ const productSchema = new mongoose.Schema(
         deleted: {
             type: Boolean,
             default: false,
+        },
+        rating: {
+            type: Number,
+            default: 0,
+        },
+        ratingCount: {
+            type: Number,
+            default: 0,
+        },
+        ratingQuantity: {
+            type: Number,
+            default: 0,
         }
     },
     { timestamps: true }

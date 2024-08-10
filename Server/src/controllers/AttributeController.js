@@ -40,3 +40,18 @@ export const getAllAttributes = async (req, res) => {
         })
     }
 }
+export const getAllAttributeById = async (req, res) => {
+    try {
+        const data = await AttributeModel.findById({ _id: req.params.id });
+        if (!data) {
+            return res.status(STATUS.BAD_REQUEST).json({
+                message: "Không có thuộc tính nào",
+            })
+        }
+        return res.status(STATUS.OK).json(data)
+    } catch (error) {
+        return res.status(STATUS.INTERNAL).json({
+            message: error.message
+        })
+    }
+}
